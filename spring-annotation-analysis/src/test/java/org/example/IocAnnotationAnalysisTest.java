@@ -1,6 +1,7 @@
 package org.example;
 
 
+import org.example.ioc.ComponentScanAnalysis;
 import org.example.ioc.IocStartConfig;
 import org.example.model.Person;
 import org.junit.Before;
@@ -14,10 +15,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class IocAnnotationAnalysisTest {
 
     // 启动策略配置
-    private final LoadStrategy loadStrategy = LoadStrategy.SCAN_PACKAGE;
+    private final LoadStrategy loadStrategy = LoadStrategy.SCAN_CLASS;//LoadStrategy.SCAN_PACKAGE;
 
     private final String scanPackages = "org.example.ioc";
-    private final Class clazz = IocStartConfig.class;
+    private final Class clazz = ComponentScanAnalysis.class;//IocStartConfig.class;
     private ApplicationContext context;
 
     enum LoadStrategy{
@@ -70,6 +71,21 @@ public class IocAnnotationAnalysisTest {
 //            this.scan(basePackages);
 //            this.refresh();
 //        }
+    }
+
+    @Test
+    public void testComponentScan(){
+        // 对于内置的后置器是无法-
+        /**
+         * org.springframework.context.annotation.internalConfigurationAnnotationProcessor
+         * org.springframework.context.annotation.internalAutowiredAnnotationProcessor
+         * org.springframework.context.event.internalEventListenerProcessor
+         * org.springframework.context.event.internalEventListenerFactory
+         */
+        String[]beans = context.getBeanDefinitionNames();
+        for(String bean:beans){
+            System.out.println(bean);
+        }
     }
 
 }
