@@ -1,6 +1,7 @@
 package org.example;
 
 
+import org.example.ioc.BeanAnalysis;
 import org.example.ioc.ComponentScanAnalysis;
 import org.example.ioc.IocStartConfig;
 import org.example.model.Person;
@@ -18,7 +19,7 @@ public class IocAnnotationAnalysisTest {
     private final LoadStrategy loadStrategy = LoadStrategy.SCAN_CLASS;//LoadStrategy.SCAN_PACKAGE;
 
     private final String scanPackages = "org.example.ioc";
-    private final Class clazz = ComponentScanAnalysis.class;//IocStartConfig.class;
+    private final Class clazz = BeanAnalysis.class;//ComponentScanAnalysis.class;//IocStartConfig.class;
     private ApplicationContext context;
 
     enum LoadStrategy{
@@ -86,6 +87,21 @@ public class IocAnnotationAnalysisTest {
         for(String bean:beans){
             System.out.println(bean);
         }
+    }
+
+    /**
+     * <p>理解单例Bean和多例bean的区别</p>
+     * <p>在注册过程中，init和destroy方法是如何去处理的加工</p>
+     *
+     */
+    @Test
+    public void testBean(){
+        AnnotationConfigApplicationContext ctx = (AnnotationConfigApplicationContext)context;
+
+        Person person1 = ctx.getBean(Person.class);
+        Person person2 = ctx.getBean(Person.class);
+        System.out.println(person1==person2);
+        // ctx.close();
     }
 
 }
