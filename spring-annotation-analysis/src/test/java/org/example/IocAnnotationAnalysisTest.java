@@ -4,6 +4,7 @@ package org.example;
 import org.example.ioc.BeanAnalysis;
 import org.example.ioc.ComponentScanAnalysis;
 import org.example.ioc.IocStartConfig;
+import org.example.ioc.imports.ImportAnalysis;
 import org.example.model.Person;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class IocAnnotationAnalysisTest {
     private final LoadStrategy loadStrategy = LoadStrategy.SCAN_CLASS;//LoadStrategy.SCAN_PACKAGE;
 
     private final String scanPackages = "org.example.ioc";
-    private final Class clazz = BeanAnalysis.class;//ComponentScanAnalysis.class;//IocStartConfig.class;
+    private final Class clazz = ImportAnalysis.class;//BeanAnalysis.class;//ComponentScanAnalysis.class;//IocStartConfig.class;
     private ApplicationContext context;
 
     enum LoadStrategy{
@@ -102,6 +103,21 @@ public class IocAnnotationAnalysisTest {
         Person person2 = ctx.getBean(Person.class);
         System.out.println(person1==person2);
         // ctx.close();
+
+        //((AnnotationConfigApplicationContext) context).registerBean();
     }
+
+    /**
+     * @Desc:测试@import注解的三种使用方式
+     */
+    @Test
+    public void testImportBean(){
+        AnnotationConfigApplicationContext ctx = (AnnotationConfigApplicationContext)context;
+        for (String beanDefinitionName : ctx.getBeanDefinitionNames()) {
+            System.out.println(beanDefinitionName);
+        }
+    }
+
+
 
 }
