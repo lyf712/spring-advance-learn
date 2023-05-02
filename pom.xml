@@ -10,6 +10,7 @@
     <module>spring-annotation-analysis</module>
     <module>spring-boot-base-analysis</module>
     <module>java-pre-base</module>
+      <module>webserver-pre-base</module>
   </modules>
   <packaging>pom</packaging>
 

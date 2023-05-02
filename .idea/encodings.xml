@@ -11,5 +11,9 @@
     <file url="file://$PROJECT_DIR$/spring-boot-base-analysis/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webserver-pre-base/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webserver-pre-base/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webserver-pre-base/tomcat-analysis/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webserver-pre-base/tomcat-analysis/src/main/resources" charset="UTF-8" />
   </component>
 </project>
