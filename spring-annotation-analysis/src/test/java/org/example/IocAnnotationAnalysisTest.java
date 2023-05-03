@@ -3,6 +3,9 @@ package org.example;
 
 import org.example.ioc.IocStartConfig;
 import org.example.ioc.di.autowire.AutowireConfig;
+import org.example.ioc.di.cyclepb.CycleDIConfig;
+import org.example.ioc.di.cyclepb.singleton.ComponentA;
+import org.example.ioc.di.cyclepb.singleton.ComponentB;
 import org.example.ioc.instance.ConfigBean;
 import org.example.ioc.instance.PostConstruct;
 import org.example.ioc.scope.ScopeBean;
@@ -27,7 +30,7 @@ public class IocAnnotationAnalysisTest {
     private final LoadStrategy loadStrategy = LoadStrategy.SCAN_CLASS;//LoadStrategy.SCAN_PACKAGE;
 
     private final String scanPackages = "org.example.ioc";
-    private final Class clazz = PostConstruct.class;//ScopeBean.class;//AutowireConfig.class;//ValueConfig.class;//LazyConfig.class; //ConditionalConfig.class;//DependsOnConfig.class;
+    private final Class clazz = CycleDIConfig.class;//PostConstruct.class;//ScopeBean.class;//AutowireConfig.class;//ValueConfig.class;//LazyConfig.class; //ConditionalConfig.class;//DependsOnConfig.class;
     //PropertySourceAnalysis.class;//ImportAnalysis.class;//BeanAnalysis.class;//ComponentScanAnalysis.class;//IocStartConfig.class;
     private ApplicationContext context;
 
@@ -221,5 +224,64 @@ public class IocAnnotationAnalysisTest {
         ctx.close();
         TimeUnit.SECONDS.sleep(5);
     }
+
+    /**
+     * 测试单例Bean的setter注入情况（两种）
+     */
+    @Test
+    public void testCycleDI_1(){
+        AnnotationConfigApplicationContext ctx = (AnnotationConfigApplicationContext)context;
+        // 正常
+        for (String beanDefinitionName : ctx.getBeanDefinitionNames()) {
+            System.out.println(beanDefinitionName.toString());
+        }
+
+        //java.lang.StackOverflowError
+        //	at org.example.ioc.di.cyclepb.singleton.ComponentB.toString(ComponentB.java:16)
+        // getBean才进行实例化了？？回顾之前的Bean创建过程
+        ComponentA componentA = ctx.getBean(ComponentA.class);
+        ComponentB componentB = ctx.getBean(ComponentB.class);
+        System.out.println(componentA +":" + componentB);
+        System.out.println(componentA.getComponentB()+"::"+componentB.getComponentA());
+    }
+
+
+    // org.example.ioc.di.cyclepb.prototype
+
+    @Test
+    public void testCycleDI_2(){
+        AnnotationConfigApplicationContext ctx = (AnnotationConfigApplicationContext)context;
+
+        // Caused by: org.springframework.context.annotation.ConflictingBeanDefinitionException: Annotation-specified bean name 'componentA' for bean class [org.example.ioc.di.cyclepb.singleton.ComponentA] conflicts with existing, non-compatible
+        // bean definition of same name and class [org.example.ioc.di.cyclepb.prototype.ComponentA]
+        for (String beanDefinitionName : ctx.getBeanDefinitionNames()) {
+            System.out.println(beanDefinitionName.toString());
+        }
+
+        //Caused by: org.springframework.context.annotation.ConflictingBeanDefinitionException: Annotation-specified bean name 'componentA' for bean class [org.example.ioc.di.cyclepb.singleton.ComponentA] conflicts with existing,
+        // non-compatible bean definition of same name and class [org.example.ioc.di.cyclepb.prototype.ComponentA]
+//        org.example.ioc.di.cyclepb.prototype.ComponentA componentA = ctx.getBean(org.example.ioc.di.cyclepb.prototype.ComponentA.class);
+//        org.example.ioc.di.cyclepb.prototype.ComponentB componentB = ctx.getBean(org.example.ioc.di.cyclepb.prototype.ComponentB.class);
+//        System.out.println(componentA +":" + componentB);
+//        System.out.println(componentA.getComponentB()+"::"+componentB.getComponentA());
+    }
+
+    @Test
+    public void testCycleDI_3(){
+        AnnotationConfigApplicationContext ctx = (AnnotationConfigApplicationContext)context;
+        // 正常
+//        for (String beanDefinitionName : ctx.getBeanDefinitionNames()) {
+//            System.out.println(beanDefinitionName.toString());
+//        }
+
+        //java.lang.StackOverflowError
+        //	at org.example.ioc.di.cyclepb.singleton.ComponentB.toString(ComponentB.java:16)
+        // getBean才进行实例化了？？回顾之前的Bean创建过程
+        org.example.ioc.di.cyclepb.proxy.ComponentA componentA = ctx.getBean( org.example.ioc.di.cyclepb.proxy.ComponentA.class);
+        org.example.ioc.di.cyclepb.proxy.ComponentB componentB = ctx.getBean( org.example.ioc.di.cyclepb.proxy.ComponentB.class);
+        System.out.println(componentA +":" + componentB);
+        System.out.println(componentA.getComponentB()+"::"+componentB.getComponentA());
+    }
+
 
 }
