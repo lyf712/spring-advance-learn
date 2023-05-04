@@ -6,6 +6,8 @@ import org.example.ioc.di.autowire.AutowireConfig;
 import org.example.ioc.di.cyclepb.CycleDIConfig;
 import org.example.ioc.di.cyclepb.singleton.ComponentA;
 import org.example.ioc.di.cyclepb.singleton.ComponentB;
+import org.example.ioc.event.EventAnalysisConfig;
+import org.example.ioc.event.MyEvent;
 import org.example.ioc.instance.ConfigBean;
 import org.example.ioc.instance.PostConstruct;
 import org.example.ioc.scope.ScopeBean;
@@ -30,7 +32,7 @@ public class IocAnnotationAnalysisTest {
     private final LoadStrategy loadStrategy = LoadStrategy.SCAN_CLASS;//LoadStrategy.SCAN_PACKAGE;
 
     private final String scanPackages = "org.example.ioc";
-    private final Class clazz = CycleDIConfig.class;//PostConstruct.class;//ScopeBean.class;//AutowireConfig.class;//ValueConfig.class;//LazyConfig.class; //ConditionalConfig.class;//DependsOnConfig.class;
+    private final Class clazz = EventAnalysisConfig.class;//CycleDIConfig.class;//PostConstruct.class;//ScopeBean.class;//AutowireConfig.class;//ValueConfig.class;//LazyConfig.class; //ConditionalConfig.class;//DependsOnConfig.class;
     //PropertySourceAnalysis.class;//ImportAnalysis.class;//BeanAnalysis.class;//ComponentScanAnalysis.class;//IocStartConfig.class;
     private ApplicationContext context;
 
@@ -283,5 +285,15 @@ public class IocAnnotationAnalysisTest {
         System.out.println(componentA.getComponentB()+"::"+componentB.getComponentA());
     }
 
+    /**
+     * 测试事件机制
+     */
+    @Test
+    public void testEvent(){
+        AnnotationConfigApplicationContext ctx = (AnnotationConfigApplicationContext)context;
+        // ioc相对于发布者了？
+        ctx.publishEvent(new MyEvent("","name", MyEvent.SubType.SYNC));
+
+    }
 
 }
